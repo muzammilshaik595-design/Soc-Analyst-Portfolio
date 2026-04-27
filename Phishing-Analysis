@@ -1,0 +1,65 @@
+# Phishing Analysis Report: Fake PayPal Payment Notification
+
+## 📧 Email Details
+- **Subject**: "You've received a payment of $850.00"
+- **Sender**: service@paypa1-secure.com (note the "1" instead of "l")
+- **Date Analyzed**: March 15, 2026
+- **Verdict**: **MALICIOUS - Phishing Attempt**
+
+## 🔍 Analysis Steps
+
+### 1. Email Header Analysis
+**From Address**: service@paypa1-secure.com
+- Domain "paypa1-secure.com" is NOT owned by PayPal (legitimate: @paypal.com)
+- SPF: FAIL (sender IP not authorized)
+- DKIM: FAIL (signature invalid)
+- DMARC: FAIL
+
+**Originating IP**: 185.220.101.45
+- Checked via AbuseIPDB: Reported 23 times for spam/phishing
+- Geolocation: Russia (suspicious for PayPal communication)
+
+### 2. URL Analysis
+**Malicious Link in Email**: 
+hxxps://paypa1-secure[.]com/claim-payment?id=85893
+
+Checked on URLscan.io:
+- Redirects to credential harvesting page
+- Mimics PayPal login interface
+- Certificate issued only 3 days ago (newly registered domain)
+
+VirusTotal Results:
+- 8/93 security vendors flagged as malicious
+- Categories: Phishing, Credential Theft
+
+### 3. MITRE ATT&CK Mapping
+- **T1566.002**: Phishing - Spearphishing Link
+- **T1598.003**: Phishing for Information - Spearphishing Link
+- **T1539**: Steal Web Session Cookie (if user logs in)
+
+## 🚨 Indicators of Compromise (IOCs)
+
+| Type | Value | Context |
+|------|-------|---------|
+| Domain | paypa1-secure[.]com | Spoofed PayPal domain |
+| IP Address | 185.220.101.45 | Sender mail server |
+| URL | hxxps://paypa1-secure[.]com/claim-payment | Credential phishing page |
+| Email | service@paypa1-secure.com | Spoofed sender |
+
+## ✅ Recommended Actions
+1. **Immediate**: Block domain "paypa1-secure.com" at email gateway
+2. **Immediate**: Block IP 185.220.101.45 at firewall
+3. **Short-term**: Query SIEM for any users who clicked the link
+4. **Short-term**: Send security awareness email to all employees
+5. **Long-term**: Implement additional email authentication (DMARC policy enforcement)
+
+## 📝 ServiceNow Ticket Created
+- **Ticket ID**: INC0012345
+- **Priority**: P2 - High
+- **Category**: Security Incident - Phishing
+- **Assignment Group**: SOC Tier 1
+- **Status**: Resolved
+
+---
+**Analyst**: Shaik Muzammil Hussain  
+**Date**: March 15, 2026
